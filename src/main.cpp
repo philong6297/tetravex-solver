@@ -4,6 +4,7 @@
 
 int main() {
   std::ios::sync_with_stdio(false);
+  // absolute dir = full name of the path
   Game game = GameGenerator::ReadFromFile("D:/cpp-projects/tetravex-solver/data/6x6.txt");
 
   // {

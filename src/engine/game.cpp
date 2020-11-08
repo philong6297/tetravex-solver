@@ -54,10 +54,15 @@ bool Game::CanMovePieceToBoard(const PieceId piece_id, const BoardPosition posit
   const int32_t col_id = position.col_id;
 
   const BoardPosition top_neighbor_position = {row_id - 1, col_id};
+  // check bound of neighbor
   if (!IsInvalidBoardPosition(top_neighbor_position)) {
+    // get piece id at that position
     const PieceId& top_neighbor_piece_id = PieceAtBoard(top_neighbor_position);
-    if (top_neighbor_piece_id != kInvalidPieceId &&
-        new_piece.top != GetPieceData(top_neighbor_piece_id).bottom) {
+    //
+    if (top_neighbor_piece_id != kInvalidPieceId   // if neighbor piece_id exist in board
+        && new_piece.top !=
+             GetPieceData(top_neighbor_piece_id).bottom   // new top should be = neighbor bottom
+    ) {
       return false;
     }
   }
@@ -93,20 +98,28 @@ bool Game::CanMovePieceToBoard(const PieceId piece_id, const BoardPosition posit
 }
 
 Game::PieceId Game::ExtractPieceFromBoard(const BoardPosition position) {
+  // get the id
   PieceId& piece_id_at_pos   = PieceAtBoard(position);
+  // temp var to save old id
   PieceId extracted_piece_id = piece_id_at_pos;
+  // id = invalid ~ empty
   piece_id_at_pos            = kInvalidPieceId;
+  // return temp
   return extracted_piece_id;
 }
 
+// return reference ~ the return object is mutable
 Game::PieceId& Game::PieceAtBoard(const BoardPosition position) {
+  // convert 2D to 1D
   return board_.at(position.row_id * size_ + position.col_id);
 }
 
+// return const ref ~ immutable
 const Game::PieceId& Game::PieceAtBoard(const BoardPosition position) const {
   return board_[position.row_id * size_ + position.col_id];
 }
 
+// bound checking
 bool Game::IsInvalidBoardPosition(BoardPosition position) const {
   return position.row_id < 0 || position.col_id < 0 || position.row_id > size_ - 1 ||
          position.col_id > size_ - 1;
