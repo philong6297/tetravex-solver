@@ -6,7 +6,7 @@
 
 function(longlp_desired_compile_options output_variable)
   set(GNU_compile_options_
-      -std=c++17
+      -std=c++11
       -Wall -Wextra -Wpedantic
       -Walloc-zero
       -Walloca -Wno-c++11-compat -Wno-c++14-compat
@@ -35,13 +35,13 @@ function(longlp_desired_compile_options output_variable)
       -Wno-pmf-conversions
       -Wno-padded)
   set(Clang_compile_options_
-      -std=c++17
+      -std=c++11
       -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic
       -Wno-c++11-compat -Wno-c++11-compat-pedantic -Wno-c++14-compat
       -Wno-c++14-compat-pedantic
       -Wno-padded)
   set(MSVC_compile_options_
-      /std:c++17  /c /EHsc
+      /std:c++11  /c /EHsc
       /permissive-)
   if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")

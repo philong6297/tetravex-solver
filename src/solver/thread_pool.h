@@ -16,7 +16,7 @@ class ThreadPool {
   ThreadPool(size_t thread_count);
 
   template <class F, class... Args>
-  std::future<typename std::invoke_result_t<F, Args...>> push(F&& f, Args&&... args);
+  std::future<typename std::result_of<F(Args...)>::type> push(F&& f, Args&&... args);
   ~ThreadPool();
 
  private:
@@ -70,15 +70,14 @@ inline ThreadPool::ThreadPool(const size_t thread_count) : stop_(false) {
 // { double b();}; ~ double b(A* a); pool.push(&f); pool.push(&g, a, b); push.push(&a::b, &a);
 // variadic arguments
 template <class FunctionName, class... FunctionArgs>
-std::future<typename std::invoke_result_t<FunctionName, FunctionArgs...>> ThreadPool::push(
+std::future<typename std::result_of<FunctionName(FunctionArgs...)>::type> ThreadPool::push(
   FunctionName&& f,
   FunctionArgs&&... args) {
-
-  using return_type = typename std::invoke_result_t<FunctionName, FunctionArgs...>;
+  using return_type = typename std::result_of<FunctionName(FunctionArgs...)>::type;
 
   // create a packaged task async
   auto task = std::make_shared<std::packaged_task<return_type()>>(
-    std::bind(std::forward<F>(f), std::forward<Args>(args)...));
+    std::bind(std::forward<FunctionName>(f), std::forward<FunctionArgs>(args)...));
 
   std::future<return_type> res = task->get_future();
 
